@@ -1,0 +1,33 @@
+stages:
+  - build
+  - test
+#  - deploy
+#  - cleanup
+
+build:
+  stage: build
+  image: visabhishek/landodocker
+  only:
+    - master
+#  script:
+#    - docker run --privileged --name landoci -v /builds/visabhishek/landoci:/var/lib/docker -d docker:dind
+#    - apt-get update
+#    - curl -fsSL -o /tmp/lando-latest.deb http://installer.kalabox.io/lando-latest-dev.deb
+#    - dpkg -i /tmp/lando-latest.deb
+#    - lando version
+  script:
+        - docker
+        - lando composer install
+        - lando start -- -v
+  artifacts:
+    paths:
+      - ./ 
+
+  
+  
+test:
+    stage: test
+    dependencies:
+    - build
+    script:
+        - lando list

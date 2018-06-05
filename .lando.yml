@@ -1,0 +1,36 @@
+name: landoci
+recipe: drupal8
+config:
+  env: dev
+  site: landoci
+  webroot: .
+services:
+  appserver:
+    build:
+      - cd $LANDO_MOUNT && composer install
+    overrides:
+      services:
+        environment:
+          BEHAT_PARAMS: >-
+            {"extensions" : {"Behat\\MinkExtension" : {"base_url" :
+            "http://landoci.lndo.site/"}, "Drupal\\DrupalExtension" : {"drush" :   {
+            "root":  "/app" }}}}
+
+tooling:
+  phplint:
+    service: appserver
+    cmd: /app/vendor/bin/phplint
+  phpcs:
+    service: appserver
+    cmd: /app/vendor/bin/phpcs
+  phpunit:
+    service: appserver
+    cmd: /app/vendor/bin/phpunit
+  behat:
+    service: appserver
+    cmd: /app/vendor/bin/behat
+  test:
+    service: appserver
+    cmd:
+      - composer
+      - test
